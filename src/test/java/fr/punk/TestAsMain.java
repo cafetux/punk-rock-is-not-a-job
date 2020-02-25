@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 public class TestAsMain {
 
@@ -31,6 +32,9 @@ public class TestAsMain {
         Words words = new MemoryWords();
         load("files/songs/les rats").forEach(words::save);
         load("files/songs/oth").forEach(words::save);
+        load("files/songs/rap").forEach(words::save);
+        load("files/songs/zabriskie point").forEach(words::save);
+        load("files/songs/charly fiasco").forEach(words::save);
         load("files/songs/gxp").forEach(words::save);
         load("files/songs/justine").forEach(words::save);
         load("files/texts").forEach(words::save);
@@ -43,14 +47,16 @@ public class TestAsMain {
                 .register(new GrammarModerator());
         ContentGenerator generator = new ContentGenerator(new SentenceGenerator(words), validator);
 
-        Lyrics output = generator.generate();
-        String corrected1 = autocorrect.correct(output.get(0).format());
-        String corrected2 = autocorrect.correct(output.get(1).format());
+        Optional<Lyrics> output = generator.generate();
+        if(output.isPresent()) {
+            String corrected1 = autocorrect.correct(output.get().get(0).format());
+            String corrected2 = autocorrect.correct(output.get().get(1).format());
 
-        LOGGER.info("--------------------------------------------");
-        LOGGER.info("{}", corrected1);
-        LOGGER.info("{}", corrected2);
-        LOGGER.info("--------------------------------------------");
+            LOGGER.info("--------------------------------------------");
+            LOGGER.info("{}", corrected1);
+            LOGGER.info("{}", corrected2);
+            LOGGER.info("--------------------------------------------");
+        }
     }
 
     private List<Sentence> load(String s) throws URISyntaxException {

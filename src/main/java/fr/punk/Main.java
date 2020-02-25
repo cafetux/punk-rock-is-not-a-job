@@ -19,6 +19,7 @@ import twitter4j.TwitterFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -49,12 +50,17 @@ public class Main {
 
 
         scheduler.scheduleAtFixedRate(() -> {
-            Lyrics output = generator.generate();
-            String corrected1 = autocorrect.correct(output.get(0).format());
-            String corrected2 = autocorrect.correct(output.get(1).format());
+            Optional<Lyrics> output;
+            do {
+                output = generator.generate();
+            } while (!output.isPresent());
 
-            post(corrected1,corrected2);
-        }, 0, 4, TimeUnit.HOURS);
+            String corrected1 = autocorrect.correct(output.get().get(0).format());
+            String corrected2 = autocorrect.correct(output.get().get(1).format());
+            post(corrected1, corrected2);
+
+        }, 0, 2, TimeUnit.HOURS);
+
 
         LOGGER.info("End");
 
@@ -82,8 +88,11 @@ public class Main {
         if(sentences.isEmpty()) {
             LOGGER.warn("no existing data, load files");
             load("files/songs/les rats").forEach(words::save);
+            load("files/songs/charly fiasco").forEach(words::save);
+            load("files/songs/rap").forEach(words::save);
             load("files/songs/oth").forEach(words::save);
             load("files/songs/gxp").forEach(words::save);
+            load("files/songs/zabriskie point").forEach(words::save);
             load("files/songs/justine").forEach(words::save);
             load("files/texts").forEach(words::save);
 //            datas.save(sentences);

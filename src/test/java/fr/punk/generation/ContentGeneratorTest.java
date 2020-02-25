@@ -35,7 +35,7 @@ public class ContentGeneratorTest {
         when(sentencesMock.generateSentence()).thenReturn(
                 sentence("Viens donc avec ton tamis"),
                 sentence("je serais avec ton amis"));
-        Lyrics result = sut.generate();
+        Lyrics result = sut.generate().get();
         assertThat(result.size()).isEqualTo(2);
     }
 
@@ -50,7 +50,7 @@ public class ContentGeneratorTest {
                 sentence("Viens donc avec ton tamis"),
                 sentence("Encore là ?"),
                 sentence("je serais avec ton amis"));
-        Lyrics result = sut.generate();
+        Lyrics result = sut.generate().get();
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).format()).isEqualTo("Viens donc avec ton tamis");
         assertThat(result.get(1).format()).isEqualTo("je serais avec ton amis");
@@ -67,7 +67,7 @@ public class ContentGeneratorTest {
                 sentence("Viens donc avec ton tamis"),
                 sentence("Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?"),
                 sentence("je serais avec ton amis"));
-        Lyrics result = sut.generate();
+        Lyrics result = sut.generate().get();
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).format()).isEqualTo("Viens donc avec ton tamis");
@@ -81,7 +81,7 @@ public class ContentGeneratorTest {
                 sentence("Viens donc avec ton panier"),
                 sentence("Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?"),
                 sentence("je serais avec ton amis"));
-        Lyrics result = sut.generate();
+        Lyrics result = sut.generate().get();
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).format()).isEqualTo("Viens donc avec ton tamis");
@@ -96,7 +96,7 @@ public class ContentGeneratorTest {
                 sentence("Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?Encore là ?"),
                 sentence("je serais sans doute ton amis"),
                 sentence("on serait sans doute amis"));
-        Lyrics result = sut.generate();
+        Lyrics result = sut.generate().get();
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).format()).isEqualTo("Viens donc avec ton tamis");
@@ -109,7 +109,7 @@ public class ContentGeneratorTest {
                 sentence("Viens donc avec ton amis"),
                 sentence("on serait sans doute amis"),
                 sentence("je serais alors sans abris"));
-        Lyrics result = sut.generate();
+        Lyrics result = sut.generate().get();
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.get(0).format()).isEqualTo("Viens donc avec ton amis");
@@ -123,23 +123,13 @@ public class ContentGeneratorTest {
         sut = new ContentGenerator(sentencesMock, validator);
 
         when(sentencesMock.generateSentence()).thenReturn(sentence("ha"));
-        try {
-            sut.generate();
-            fail("should throw exception");
-        } catch(IllegalStateException e) {
-            assertThat(e).hasMessageContaining("Cannot find a valid sentence after");
-        }
+        assertThat(sut.generate()).isEmpty();
     }
 
     @Test
     public void should_not_have_infinite_loop_for_second_sentence() {
         when(sentencesMock.generateSentence()).thenReturn(sentence("Viens donc avec ton amis"),sentence("ha"));
-        try {
-            sut.generate();
-            fail("should throw exception");
-        } catch(IllegalStateException e) {
-            assertThat(e).hasMessageContaining("Cannot find a compatible sentence");
-        }
+        assertThat(sut.generate()).isEmpty();
     }
 
     private Sentence sentence(String sentence) {

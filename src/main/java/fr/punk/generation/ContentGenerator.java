@@ -6,6 +6,8 @@ import org.marpunk.core.SentenceGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  *
  */
@@ -21,18 +23,22 @@ public class ContentGenerator {
         this.validator = validator;
     }
 
-    public Lyrics generate(){
-        Sentence first = generateSentence();
-        LOGGER.info("Generate sentence 1: {}",first);
-        Sentence second = findSecondSentenceCompatibleWith(first);
-        LOGGER.info("Generate sentence 2: {}",second);
-        return new Lyrics(first,second);
+    public Optional<Lyrics> generate(){
+        try {
+            Sentence first = generateSentence();
+            LOGGER.info("Generate sentence 1: {}", first);
+            Sentence second = findSecondSentenceCompatibleWith(first);
+            LOGGER.info("Generate sentence 2: {}", second);
+            return Optional.of(new Lyrics(first, second));
+        } catch(Exception e) {
+            return Optional.empty();
+        }
     }
 
     private Sentence findSecondSentenceCompatibleWith(Sentence first) {
         for(int i = 0; i< 10000; i++) {
             Sentence sentenceCandidat = generateSentence();
-            LOGGER.debug("candidat :{}", sentenceCandidat.format());
+            LOGGER.debug("candidat "+i+":{}", sentenceCandidat.format());
                 if(sentenceMatcher.match(first, sentenceCandidat))
                 {
                     return sentenceCandidat;
