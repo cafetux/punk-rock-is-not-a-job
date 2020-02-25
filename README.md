@@ -8,9 +8,13 @@ Toutes les x heures, tweet un couple de phrases de même longueur et censés rim
 
 
 Pour twitter, renseignez un fichier twitter4j.properties, contenant:
+
 oauth.consumerKey=
+
 oauth.consumerSecret=
+
 oauth.accessToken=
+
 oauth.accessTokenSecret=
 
 
