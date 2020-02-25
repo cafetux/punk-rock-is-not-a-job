@@ -94,6 +94,8 @@ public class Main {
             load("files/songs/gxp").forEach(words::save);
             load("files/songs/zabriskie point").forEach(words::save);
             load("files/songs/justine").forEach(words::save);
+            load("files/songs/lsm").forEach(words::save);
+            load("files/songs/misc").forEach(words::save);
             load("files/texts").forEach(words::save);
 //            datas.save(sentences);
         }
